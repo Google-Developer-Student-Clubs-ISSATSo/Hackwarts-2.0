@@ -16,6 +16,7 @@ export default {
         blackbean: "var(--blackbean)",
         rosewood: "var(--rosewood)",
         copper: "var(--copper)",
+        wheat: "var(--wheat)",
         jet: "var(--jet)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

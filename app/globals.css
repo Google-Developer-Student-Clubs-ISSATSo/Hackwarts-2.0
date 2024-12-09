@@ -16,15 +16,20 @@ body {
   @apply bg-rosewood text-sunset;
 }
 
+input {
+  @apply text-rosewood;
+}
+
 @layer base {
   :root {
-    --sunset: #EFC283;
-    --licorice: #140A09;
-    --lemonchiffon: #FDF1C3;
+    --sunset: #efc283;
+    --licorice: #140a09;
+    --lemonchiffon: #fdf1c3;
     --blackbean: #311210;
     --rosewood: #581011;
-    --copper: #B47B2C;
-    --jet: #292B2A;
+    --copper: #b47b2c;
+    --wheat: #f3e5ab;
+    --jet: #292b2a;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;

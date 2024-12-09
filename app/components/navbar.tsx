@@ -69,7 +69,7 @@ const Navbar = () => {
   const { data: session } = useSession();
   const [toggle, setToggle] = useState(false);
   return (
-    <div className="fixed z-40 top-0 left-4 right-4 box-border mt-4">
+    <div className="sticky z-40 top-0 left-4 right-4 box-border p-6 mt-4">
       <nav className="backdrop-blur-md flex items-center justify-between relative w-full h-full py-1 px-6 box-border border-t-2 border-b-2 border-yellow-500 ">
         {/* Baroque border design */}
         <Image
