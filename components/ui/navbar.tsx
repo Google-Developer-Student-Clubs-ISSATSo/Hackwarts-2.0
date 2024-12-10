@@ -45,21 +45,23 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
         >
           <LogIn className="w-6 h-6" /> {session ? "Logout" : "Login"}
         </Button>
-        <Link
-          className={cn(
-            "w-full",
-            buttonVariants({
-              variant: "hackwarts",
-              size: "lg",
-              className: "mb-4",
-            }),
-            "bg-[#6f2f2a] text-yellow-400 ",
-          )}
-          href="/register"
-          onClick={onClose}
-        >
-          <Users className="w-6 h-6" /> Register Team
-        </Link>
+        {!session && (
+          <Link
+            className={cn(
+              "w-full",
+              buttonVariants({
+                variant: "hackwarts",
+                size: "lg",
+                className: "mb-4",
+              }),
+              "bg-[#6f2f2a] text-yellow-400 "
+            )}
+            href="/register"
+            onClick={onClose}
+          >
+            <Users className="w-6 h-6" /> Register Team
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -102,23 +104,32 @@ const Navbar = () => {
           />
         </div>
         <div className="hidden md:flex items-center gap-2 relative z-10">
-          <Button
-            variant="hackwarts"
-            className="bg-amber-600 text-amber-950"
-            onClick={() =>
-              session
-                ? signOut()
-                : signIn("google", { callbackUrl: "/challenges" })
-            }
-          >
-            <LogIn className="w-4 h-4" /> {session ? "Logout" : "Login"}
-          </Button>
-          <Link href="/register">
-            <Button variant="hackwarts">
-              <Users className="w'4 h-4" />
-              Register Team
+          {!session && (
+            <>
+              <Button
+                variant="hackwarts"
+                className="bg-amber-600 text-amber-950"
+                onClick={() => signIn("google", { callbackUrl: "/challenges" })}
+              >
+                <LogIn className="w-4 h-4" /> Login
+              </Button>
+              <Link href="/register">
+                <Button variant="hackwarts">
+                  <Users className="w-4 h-4" />
+                  Register Team
+                </Button>
+              </Link>
+            </>
+          )}
+          {session && (
+            <Button
+              variant="hackwarts"
+              className="bg-amber-600 text-amber-950"
+              onClick={() => signOut()}
+            >
+              <LogIn className="w-4 h-4" /> Logout
             </Button>
-          </Link>
+          )}
         </div>
         <div className="block md:hidden">
           <Button
