@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPinned, Scroll, Wand } from "lucide-react";
 import Image from "next/image";
 
+import HousePercentage from "@/components/ui/HousePercentage";
 import prize from "@/public/HogwartsHouseCup.webp";
 import baroqueBorder from "@/public/baroqueborder.png";
 import magicien from "@/public/fly.png";
@@ -10,8 +11,7 @@ import goldenball from "@/public/goldenball.png";
 import issat from "@/public/issat.png";
 import logo from "@/public/logo.png";
 import moon from "@/public/moon.png";
-import Starfield from "@/components/ui/starfield";
-
+import Link from "next/link";
 function Hero() {
   return (
     <div className="relative flex flex-col items-center justify-center h-screen bg-rosewood overflow-hidden">
@@ -23,6 +23,7 @@ function Hero() {
           className="w-40 -top-14 left-1/2  md:w-60 absolute md:-top-20 md:-right-20 invert animate-sinusoidal"
         />
         <div className="w-full flex items-center gap-2 justify-center flex-wrap">
+        <Link href={"/plan"}>
           <Button
             variant="hackwarts"
             className="relative text-md font-semibold"
@@ -35,12 +36,16 @@ function Hero() {
             />
             Start casting magic
           </Button>
+          </Link>
+          <Link href={"/challenges"}>
           <Button
             variant="hackwarts"
             className="text-md font-bold bg-white text-amber-800"
+            
           >
             <Scroll /> List of challenges
           </Button>
+          </Link>
         </div>
       </div>
     </div>
@@ -158,6 +163,7 @@ function Prize() {
   );
 }
 
+
 function Footer() {
   return (
     <footer className="flex flex-col items-center justify-center py-6 mt-12 bg-rosewood text-white">
@@ -179,8 +185,8 @@ function Footer() {
 export default function Home() {
   return (
     <div>
-      <Starfield />
       <Hero />
+      <HousePercentage />
       <Location />
       <Prize />
       <h1 className="text-6xl text-harryp text-center mt-12">And more...</h1>

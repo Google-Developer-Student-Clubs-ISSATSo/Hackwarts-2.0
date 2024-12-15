@@ -5,6 +5,7 @@ export interface IChallenge extends Document {
   sponsor_name: string;
   description: string;
   prize: string;
+  link: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -15,8 +16,9 @@ const challengeSchema = new Schema<IChallenge>(
     sponsor_name: { type: String, required: true },
     description: { type: String, required: true },
     prize: { type: String, required: true },
+    link: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Challenge: Model<IChallenge> =

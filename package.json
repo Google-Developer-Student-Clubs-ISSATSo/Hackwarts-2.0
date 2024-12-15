@@ -3,21 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "seed": "npx tsx --env-file=.env.local utils/seedDatabase.ts"
   },
   "dependencies": {
-    "@radix-ui/react-label": "^2.1.0",
     "@auth/mongodb-adapter": "^3.7.4",
     "@hookform/resolvers": "^3.9.1",
+    "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.468.0",
     "mongodb": "^6.11.0",
     "mongoose": "^8.8.4",
@@ -28,9 +29,11 @@
     "react-dom": "19.0.0",
     "react-hook-form": "^7.54.0",
     "react-icons": "^5.4.0",
+    "react-toastify": "^10.0.6",
+    "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^20",

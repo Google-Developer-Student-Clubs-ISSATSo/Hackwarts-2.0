@@ -19,6 +19,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
+import { createTeam } from "@/app/actions/create-team";
+import { useTeamCheck } from "@/hooks/useTeamCheck";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -30,18 +32,22 @@ const formSchema = z.object({
       z.object({
         name: z.string().min(2),
         email: z.string().email(),
-      })
+      }),
     )
     .max(4), // Max 4 additional members + 1 leader = 5 total
 });
 
 export default function CreateTeam() {
   const { data: session, status } = useSession();
+  const { hasTeam } = useTeamCheck(session?.user?.email);
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
+      house: undefined,
       leader_name: session?.user?.name || "",
       leader_email: session?.user?.email || "",
       members: [],
@@ -58,30 +64,40 @@ export default function CreateTeam() {
 
   const getHouseEmoji = (house: string) => {
     switch (house) {
-      case "Gryffindor": return "🦁";
-      case "Hufflepuff": return "🦡";
-      case "Ravenclaw": return "🦅";
-      case "Slytherin": return "🐍";
-      default: return "🎩";
+      case "Gryffindor":
+        return "🦁";
+      case "Hufflepuff":
+        return "🦡";
+      case "Ravenclaw":
+        return "🦅";
+      case "Slytherin":
+        return "🐍";
+      default:
+        return "🎩";
     }
   };
 
   const sortingHat = () => {
     if (hasSorted) return;
-    
+
     setIsSorting(true);
     const houses = ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"];
     let duration = 2000;
     let startTime = Date.now();
-    
+
     // Pre-select final house
-    const finalHouse = houses[Math.floor(Math.random() * houses.length)] as z.infer<typeof formSchema>["house"];
+    const finalHouse = houses[
+      Math.floor(Math.random() * houses.length)
+    ] as z.infer<typeof formSchema>["house"];
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
       if (elapsed < duration) {
         const randomIndex = Math.floor((Date.now() / 100) % houses.length);
-        form.setValue("house", houses[randomIndex] as z.infer<typeof formSchema>["house"]);
+        form.setValue(
+          "house",
+          houses[randomIndex] as z.infer<typeof formSchema>["house"],
+        );
         requestAnimationFrame(animate);
       } else {
         form.setValue("house", finalHouse);
@@ -94,22 +110,23 @@ export default function CreateTeam() {
   };
 
   useEffect(() => {
-    if (!session && status !== "loading") {
+    if (status === "unauthenticated" || !session) {
       router.push("/register");
+    } else if (status === "authenticated" && hasTeam) {
+      router.push("/challenges");
     }
     if (session?.user) {
-      form.setValue("leader_name", session.user.name || "");
-      form.setValue("leader_email", session.user.email || "");
+      form.reset({
+        ...form.getValues(),
+        leader_name: session.user.name || "",
+        leader_email: session.user.email || "",
+      });
     }
-  }, [session, status]);
+  }, [session, status, router, hasTeam]);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    // TODO: Implement team creation API call
-  };
 
   return (
-    <div className="min-h-screen pt-24 px-4 bg-gradient-to-b from-rosewood to-blackbean">
+    <div className="min-h-screen pt-5 px-4">
       <div className="max-w-2xl mx-auto bg-[#c7b256] p-8 rounded-xl border-2 border-yellow-600 shadow-[0_0_50px_rgba(255,215,0,0.3)] relative">
         <Image
           src={baroqueBorder}
@@ -136,7 +153,30 @@ export default function CreateTeam() {
         </h1>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(async (data) => {
+              try {
+                setIsSubmitting(true);
+                const formData = new FormData();
+                // Append all form fields
+                formData.append("name", data.name);
+                formData.append("house", data.house);
+                formData.append("leader_name", data.leader_name);
+                formData.append("leader_email", data.leader_email);
+                // Handle members array
+                data.members.forEach((member, index) => {
+                  formData.append(`members.${index}.name`, member.name);
+                  formData.append(`members.${index}.email`, member.email);
+                });
+                await createTeam(formData);
+                setIsSubmitting(false);
+
+              } catch (error) {
+               
+              } 
+            })}
+            className="space-y-6"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -297,8 +337,16 @@ export default function CreateTeam() {
               type="submit"
               variant="hackwarts"
               className="w-full hover:scale-100"
+              disabled={isSubmitting}
             >
-              Submit
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Submitting...
+                </div>
+              ) : (
+                "Submit"
+              )}
             </Button>
           </form>
         </Form>
