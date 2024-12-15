@@ -22,30 +22,11 @@ type Submission = {
 export async function GET() {
     await connectToDatabase();
     //get all submissions and populate the team_id and the challenge_id4
+    const submissions = await Submission.find().populate("team_id").populate("challenge_id");
+    
 
-    const subs = await Submission.find();
-    let newSubs = [];
-    let names = [];
-    for (let i = 0; i < subs.length; i++) {
-        const team = await Team.findById(subs[i].team_id);
-        const challenge = await Challenge.findById(subs[i].challenge_id);
-        names.push(team?.name);
-        newSubs.push({
-            team: {
-                name: team?.name,
-                house: team?.house
-            },
-            challenge: {
-                name: challenge?.name,
-                sponsor_name: challenge?.sponsor_name
-            },
-            subs: {
-                submission_url: subs[i].submission_url,
-                deployement_url: subs[i].deployement_url,
-                createdAt: subs[i].createdAt
-            }
-        });
-    }
 
-    return NextResponse.json({newSubs, names});
-}
+
+  return NextResponse.json({
+    submissions: submissions
+  });}
