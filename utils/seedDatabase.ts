@@ -88,3 +88,4 @@ const seedDataBase = async () => {
 };
 
 export default seedDataBase;
+seedDataBase();
